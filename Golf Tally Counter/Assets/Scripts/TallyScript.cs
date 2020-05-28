@@ -8,40 +8,36 @@ using System;
 public class TallyScript : MonoBehaviour
 {
 
-
+    //references
     bool roundComplete = false;
     private float playerMultiplyer = 0;
+    private string selectedPlayer;
+    public int homeSceneReference = 0;
 
     [Header ("Current Average")]
     public TMP_Text currentAverage;
 
     
     public float averageCount = 5;
-    public string CUR_AV = "Current_Average";
 
     [Header ("Previous Scores")]
-    private string prevScoreList = "PREV_SCORES";
-    private string roundCompleteReference = "ROUND_COMPLETE";
     List<float> prevScores = new List<float>();
 
     public TMP_Text[] prevScoresArr;
 
 
     [Header("User Input")]
+    public TMP_Text opponentBtn;
     public TMP_InputField scoreInput;
 
     // Start is called before the first frame update
     void Start()
     {
-        if (ES3.KeyExists(prevScoreList))
-        {
-            prevScores = ES3.Load(prevScoreList, new List<float>());
-        }
+        selectedPlayer = GameManager.instance.selectedPlayer;
+        prevScores = GameManager.instance.opponents[selectedPlayer];
+        
+        opponentBtn.text = selectedPlayer;
 
-        if (ES3.KeyExists(roundCompleteReference))
-        {
-            roundComplete = ES3.Load(roundCompleteReference, false);
-        }
         UpdateVisuals();
         CalculateAverage();
     }
@@ -74,7 +70,7 @@ public class TallyScript : MonoBehaviour
             CalculateAverage();
         }
         scoreInput.text = "";
-        ES3.Save(prevScoreList, prevScores);
+        GameManager.instance.Save();
         
     }
 
@@ -85,8 +81,8 @@ public class TallyScript : MonoBehaviour
             prevScores.RemoveAt(prevScores.Count - 1);
             UpdateVisuals();
             CalculateAverage();
-        } 
-        ES3.Save(roundCompleteReference, roundComplete);
+        }
+        GameManager.instance.Save();
     }
 
     public void CalculateAverage()
@@ -113,16 +109,14 @@ public class TallyScript : MonoBehaviour
         {
             average = 0;
         }
-        
-
             if(average < 0) { 
-                currentAverage.text = ($"Monty owes {average * -1} shots");
+                currentAverage.text = ($"{selectedPlayer} owes {average * -1} shots");
             } else if (average == 0)
             {
                 currentAverage.text = ("All Square");
             } else if (average > 0)
             {
-                currentAverage.text = ($"Nick owes {average} shots");
+                currentAverage.text = ($"I owe {average} shots");
             }
         
     }
@@ -138,7 +132,7 @@ public class TallyScript : MonoBehaviour
 
                 if (prevScores[prevScores.Count - 1 - i] < 0)
                 {
-                    prevScoresArr[arrCount].text = ($"Monty by {prevScores[prevScores.Count - 1 - i] * -1}");
+                    prevScoresArr[arrCount].text = ($"{selectedPlayer} by {prevScores[prevScores.Count - 1 - i] * -1}");
                 }
                 else if (prevScores[prevScores.Count - 1 - i] == 0)
                 {
@@ -156,5 +150,10 @@ public class TallyScript : MonoBehaviour
             }
             arrCount++;
         }
+    }
+
+    public void CloseScene()
+    {
+        GameManager.instance.SelectScene(homeSceneReference);
     }
 }
