@@ -33,31 +33,34 @@ public class UIManager : MonoBehaviour
     #region New Players
     public void SaveNewPlayerBtn(int menuNum)
     {
-        if (!GameManager.instance.opponents.ContainsKey(opponentName.text) && opponentName.text != "" && opponentShots.text != "")
-        {
-            //Add New Player here
-            List<float> shots = new List<float>();
-            float shotValue = float.Parse(opponentShots.text);
-            if(whoIsOwed.value == 1)
+        if (opponentName.text != "" && opponentShots.text != "") {
+            if (!GameManager.instance.opponents.ContainsKey(opponentName.text))
             {
-                shotValue *= -1;
-            }
+                //Add New Player here
+                AddNewOpponent newOp = new AddNewOpponent();
+                Person newPlayer = newOp.AddOpponent(opponentName.text, opponentShots.text);
+                float shotValue = float.Parse(opponentShots.text);
+                if (whoIsOwed.value == 1)
+                {
+                    shotValue *= -1;
+                }
+                newPlayer.pastRounds.Add(shotValue);
+                GameManager.instance.opponents.Add(opponentName.text, newPlayer);
+                GameManager.instance.Save();
 
-            shots.Add(shotValue);
-            GameManager.instance.opponents.Add(opponentName.text, shots);
+                opponentName.text = "";
+                opponentShots.text = "";
+                PopulateDropDown();
+                CloseMenuBtn(menuNum);
 
+            } else if (GameManager.instance.opponents.ContainsKey(opponentName.text))
+            {
+                //Handle Errors
+                Debug.Log($"Player {opponentName.text} already exists");
 
-            opponentName.text = "";
-            opponentShots.text = "";
-            PopulateDropDown();
-            CloseMenuBtn(menuNum);
-
-        } else if (GameManager.instance.opponents.ContainsKey(opponentName.text) && opponentName.text != "" && opponentShots.text != "")
-        {
-            //Handle Errors
-            Debug.Log($"Player {opponentName.text} already exists");
-
-        } else
+            } 
+        }
+        else
         {
             //Handle Errors
             Debug.Log("Please Add A valid player");

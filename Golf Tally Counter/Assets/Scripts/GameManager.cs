@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    public Dictionary<string, List<float>> opponents = new Dictionary<string, List<float>>();
+    public Dictionary<string, Person> opponents = new Dictionary<string, Person>();
 
     public string selectedPlayer;
 
@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
 
         if (ES3.KeyExists(prevScoreList))
         {
-            opponents = ES3.Load(prevScoreList, new Dictionary<string, List<float>>());
+            opponents = ES3.Load(prevScoreList, new Dictionary<string, Person>());
         }
     }
 

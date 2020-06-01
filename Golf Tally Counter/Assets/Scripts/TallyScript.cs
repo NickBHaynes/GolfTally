@@ -34,7 +34,7 @@ public class TallyScript : MonoBehaviour
     void Start()
     {
         selectedPlayer = GameManager.instance.selectedPlayer;
-        prevScores = GameManager.instance.opponents[selectedPlayer];
+        prevScores = GameManager.instance.opponents[selectedPlayer].pastRounds;
         
         opponentBtn.text = selectedPlayer;
 
@@ -140,7 +140,7 @@ public class TallyScript : MonoBehaviour
                 }
                 else if (prevScores[prevScores.Count - 1 - i] > 0)
                 {
-                    prevScoresArr[arrCount].text = ($"Nick by {prevScores[prevScores.Count - 1 - i]}");
+                    prevScoresArr[arrCount].text = ($"Me by {prevScores[prevScores.Count - 1 - i]}");
                 }
 
             }

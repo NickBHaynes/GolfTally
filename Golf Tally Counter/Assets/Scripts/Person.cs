@@ -7,6 +7,7 @@ public class Person
     //References
     public string Name { get; set; }
     public float StartingShots { get; set;}
+    public List<float> pastRounds { get; set; }
 
 
 }
